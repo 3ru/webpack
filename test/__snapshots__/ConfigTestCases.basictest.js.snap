@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ConfigTestCases css build-http exported tests should work with URLs in CSS 1`] = `
 Array [
@@ -10172,5 +10172,21 @@ a_0;
 default_0;
 
 export { a as a1 };
+"
+`;
+
+exports[`ConfigTestCases library modern-module-tree-shaking-simple modern-module-tree-shaking-simple should compile 1`] = `
+"import { debounce, throttle } from \\"lodash\\";
+/*!*****************************!*\\\\
+  !*** ./test.js + 1 modules ***!
+  \\\\*****************************/
+
+;// external \\"lodash\\"
+
+;// ./test.js
+
+
+
+export { debounce, throttle };
 "
 `;
