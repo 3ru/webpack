@@ -263,6 +263,7 @@ type ArrayBufferView<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> =
 	| Int32Array
 	| BigUint64Array
 	| BigInt64Array
+	| Float16Array
 	| Float32Array
 	| Float64Array
 	| DataView;
@@ -529,16 +530,59 @@ declare interface BannerPluginOptions {
 	test?: string | RegExp | Rule[];
 }
 declare interface BaseResolveRequest {
+	/**
+	 * path
+	 */
 	path: string | false;
+
+	/**
+	 * content
+	 */
 	context?: object;
+
+	/**
+	 * description file path
+	 */
 	descriptionFilePath?: string;
+
+	/**
+	 * description file root
+	 */
 	descriptionFileRoot?: string;
+
+	/**
+	 * description file data
+	 */
 	descriptionFileData?: JsonObjectTypes;
+
+	/**
+	 * relative path
+	 */
 	relativePath?: string;
+
+	/**
+	 * true when need to ignore symlinks, otherwise false
+	 */
 	ignoreSymlinks?: boolean;
+
+	/**
+	 * true when full specified, otherwise false
+	 */
 	fullySpecified?: boolean;
+
+	/**
+	 * inner request for internal usage
+	 */
 	__innerRequest?: string;
+
+	/**
+	 * inner request for internal usage
+	 */
 	__innerRequest_request?: string;
+
+	/**
+	 * inner relative path for internal usage
+	 */
 	__innerRequest_relativePath?: string;
 }
 declare abstract class BasicEvaluatedExpression {
@@ -900,12 +944,39 @@ declare interface BufferEntry {
 	bufferedMap?: null | BufferedMap;
 }
 declare interface BufferedMap {
+	/**
+	 * version
+	 */
 	version: number;
+
+	/**
+	 * sources
+	 */
 	sources: string[];
+
+	/**
+	 * name
+	 */
 	names: string[];
+
+	/**
+	 * source root
+	 */
 	sourceRoot?: string;
+
+	/**
+	 * sources content
+	 */
 	sourcesContent?: ("" | Buffer)[];
+
+	/**
+	 * mappings
+	 */
 	mappings?: Buffer;
+
+	/**
+	 * file
+	 */
 	file: string;
 }
 type BuildInfo = KnownBuildInfo & Record<string, any>;
@@ -919,7 +990,7 @@ declare abstract class ByTypeGenerator extends Generator {
 	) => null | Source;
 }
 declare const CIRCULAR_CONNECTION: unique symbol;
-declare class Cache {
+declare class CacheClass {
 	constructor();
 	hooks: {
 		get: AsyncSeriesBailHook<
@@ -1027,11 +1098,33 @@ declare interface CacheGroupsContext {
 	chunkGraph: ChunkGraph;
 }
 type CacheOptionsNormalized = false | FileCacheOptions | MemoryCacheOptions;
+declare interface CacheTypes {
+	[index: string]: undefined | ResolveRequest | ResolveRequest[];
+}
 declare interface CachedData {
+	/**
+	 * source
+	 */
 	source?: boolean;
+
+	/**
+	 * buffer
+	 */
 	buffer: Buffer;
+
+	/**
+	 * size
+	 */
 	size?: number;
+
+	/**
+	 * maps
+	 */
 	maps: Map<string, BufferEntry>;
+
+	/**
+	 * hash
+	 */
 	hash?: (string | Buffer)[];
 }
 declare class CachedSource extends Source {
@@ -2538,7 +2631,7 @@ declare class Compiler {
 	options: WebpackOptionsNormalized;
 	context: string;
 	requestShortener: RequestShortener;
-	cache: Cache;
+	cache: CacheClass;
 	moduleMemCaches?: Map<Module, ModuleMemCachesItem>;
 	compilerPath: string;
 	running: boolean;
@@ -2622,35 +2715,11 @@ declare interface ConcatenatedModuleInfo {
 	rawExportMap?: Map<string, string>;
 	namespaceExportSymbol?: string;
 	namespaceObjectName?: string;
-
-	/**
-	 * "default-with-named" namespace
-	 */
 	interopNamespaceObjectUsed: boolean;
-
-	/**
-	 * "default-with-named" namespace
-	 */
 	interopNamespaceObjectName?: string;
-
-	/**
-	 * "default-only" namespace
-	 */
 	interopNamespaceObject2Used: boolean;
-
-	/**
-	 * "default-only" namespace
-	 */
 	interopNamespaceObject2Name?: string;
-
-	/**
-	 * runtime namespace object that detects "__esModule"
-	 */
 	interopDefaultAccessUsed: boolean;
-
-	/**
-	 * runtime namespace object that detects "__esModule"
-	 */
 	interopDefaultAccessName?: string;
 }
 declare interface ConcatenationBailoutReasonContext {
@@ -2942,8 +3011,8 @@ declare interface Configuration {
 }
 type ConnectionState =
 	| boolean
-	| typeof CIRCULAR_CONNECTION
-	| typeof TRANSITIVE_ONLY;
+	| typeof TRANSITIVE_ONLY
+	| typeof CIRCULAR_CONNECTION;
 declare class ConstDependency extends NullDependency {
 	constructor(
 		expression: string,
@@ -3567,8 +3636,7 @@ declare interface DependenciesBlockLike {
 declare class Dependency {
 	constructor();
 	weak: boolean;
-	defer?: boolean;
-	optional?: boolean;
+	optional: boolean;
 	get type(): string;
 	get category(): string;
 	loc: DependencyLocation;
@@ -3790,7 +3858,7 @@ declare interface DeterministicModuleIdsPluginOptions {
 	failOnConflict?: boolean;
 }
 type DevtoolModuleFilenameTemplate = string | ((context?: any) => string);
-declare interface DirentFs<T extends string | Buffer = string> {
+declare interface Dirent<T extends string | Buffer = string> {
 	/**
 	 * true when is file, otherwise false
 	 */
@@ -3840,17 +3908,6 @@ declare interface DirentFs<T extends string | Buffer = string> {
 	 * path
 	 */
 	path?: string;
-}
-declare interface DirentTypes {
-	isFile: () => boolean;
-	isDirectory: () => boolean;
-	isBlockDevice: () => boolean;
-	isCharacterDevice: () => boolean;
-	isSymbolicLink: () => boolean;
-	isFIFO: () => boolean;
-	isSocket: () => boolean;
-	name: string;
-	path: string;
 }
 declare interface Disposable {
 	[Symbol.dispose](): void;
@@ -4652,11 +4709,6 @@ declare interface ExperimentsExtra {
 	css?: boolean;
 
 	/**
-	 * Enable experimental tc39 proposal https://github.com/tc39/proposal-defer-import-eval. This allows to defer execution of a module until it's first use.
-	 */
-	deferImport?: boolean;
-
-	/**
 	 * Compile entrypoints and import()s only when they are accessed.
 	 */
 	lazyCompilation?: boolean | LazyCompilationOptions;
@@ -4676,11 +4728,6 @@ declare interface ExperimentsNormalizedExtra {
 	 * Enable css support.
 	 */
 	css?: boolean;
-
-	/**
-	 * Enable experimental tc39 proposal https://github.com/tc39/proposal-defer-import-eval. This allows to defer execution of a module until it's first use.
-	 */
-	deferImport?: boolean;
 
 	/**
 	 * Compile entrypoints and import()s only when they are accessed.
@@ -4915,11 +4962,6 @@ declare interface ExportsSpec {
 	 */
 	dependencies?: Module[];
 }
-type ExportsType =
-	| "namespace"
-	| "default-only"
-	| "default-with-named"
-	| "dynamic";
 type Exposes = (string | ExposesObject)[] | ExposesObject;
 
 /**
@@ -5100,66 +5142,17 @@ declare interface ExternalModuleInfo {
 	module: Module;
 	runtimeCondition?: string | boolean | SortableSet<string>;
 	index: number;
-
-	/**
-	 * module.exports / harmony namespace object
-	 */
 	name?: string;
-
-	/**
-	 * deferred module.exports / harmony namespace object
-	 */
-	deferredName?: string;
-
-	/**
-	 * the module is deferred at least once
-	 */
-	deferred: boolean;
-
-	/**
-	 * deferred namespace object that being used in a not-analyzable way so it must be materialized
-	 */
-	deferredNamespaceObjectUsed: boolean;
-
-	/**
-	 * deferred namespace object that being used in a not-analyzable way so it must be materialized
-	 */
-	deferredNamespaceObjectName?: string;
-
 	chunkInitFragments?: InitFragment<ChunkRenderContextJavascriptModulesPlugin>[];
 	runtimeRequirements?: ReadonlySet<string>;
 	exportMap?: Map<string, string | string[] | { name: string[] }>;
 	rawExportMap?: Map<string, string | string[]>;
 	namespaceExportSymbol?: string;
-	
-	/**
-	 * "default-with-named" namespace
-	 */
 	interopNamespaceObjectUsed: boolean;
-
-	/**
-	 * "default-with-named" namespace
-	 */
 	interopNamespaceObjectName?: string;
-
-	/**
-	 * "default-only" namespace
-	 */
 	interopNamespaceObject2Used: boolean;
-
-	/**
-	 * "default-only" namespace
-	 */
 	interopNamespaceObject2Name?: string;
-
-	/**
-	 * runtime namespace object that detects "__esModule"
-	 */
 	interopDefaultAccessUsed: boolean;
-
-	/**
-	 * runtime namespace object that detects "__esModule"
-	 */
 	interopDefaultAccessName?: string;
 }
 type Externals =
@@ -5411,18 +5404,45 @@ declare interface FileCacheOptions {
 	version?: string;
 }
 declare interface FileSystem {
+	/**
+	 * read file method
+	 */
 	readFile: ReadFileTypes;
+
+	/**
+	 * readdir method
+	 */
 	readdir: ReaddirTypes;
+
+	/**
+	 * read json method
+	 */
 	readJson?: (
-		arg0: PathOrFileDescriptorTypes,
-		arg1: (
-			arg0: null | Error | NodeJS.ErrnoException,
-			arg1?: JsonObjectTypes
+		pathOrFileDescription: PathOrFileDescriptorTypes,
+		callback: (
+			err: null | Error | NodeJS.ErrnoException,
+			result?: JsonObjectTypes
 		) => void
 	) => void;
+
+	/**
+	 * read link method
+	 */
 	readlink: ReadlinkTypes;
+
+	/**
+	 * lstat method
+	 */
 	lstat?: LStatTypes;
+
+	/**
+	 * stat method
+	 */
 	stat: StatTypes;
+
+	/**
+	 * realpath method
+	 */
 	realpath?: RealPathTypes;
 }
 declare abstract class FileSystemInfo {
@@ -5577,8 +5597,19 @@ declare interface GenerateContext {
 	getData?: () => Map<string, any>;
 }
 declare interface GeneratedSourceInfo {
+	/**
+	 * generated line
+	 */
 	generatedLine?: number;
+
+	/**
+	 * generated column
+	 */
 	generatedColumn?: number;
+
+	/**
+	 * source
+	 */
 	source?: string;
 }
 declare class Generator {
@@ -5832,7 +5863,14 @@ declare class Hash {
 }
 type HashFunction = string | typeof Hash;
 declare interface HashLike {
+	/**
+	 * make hash update
+	 */
 	update: (data: string | Buffer, inputEncoding?: string) => HashLike;
+
+	/**
+	 * get hash digest
+	 */
 	digest: (encoding?: string) => string | Buffer;
 }
 declare interface HashableObject {
@@ -6033,7 +6071,6 @@ type ImportAttribute = BaseNode & {
 type ImportAttributes = Record<string, string> & {};
 type ImportDeclarationJavascriptParser = ImportDeclarationImport & {
 	attributes?: ImportAttribute[];
-	phase?: "defer";
 };
 declare interface ImportDependencyMeta {
 	attributes?: ImportAttributes;
@@ -6069,7 +6106,6 @@ type ImportExpressionJavascriptParser = ImportExpressionImport & {
 		| ThisExpression
 		| UpdateExpression
 		| YieldExpression;
-	phase?: "defer";
 };
 declare interface ImportModuleOptions {
 	/**
@@ -7640,9 +7676,8 @@ declare class JavascriptParser extends Parser {
 				getMembers: () => string[];
 		  };
 	static ALLOWED_MEMBER_TYPES_ALL: 3;
-	static ALLOWED_MEMBER_TYPES_CALL_EXPRESSION: 1;
 	static ALLOWED_MEMBER_TYPES_EXPRESSION: 2;
-	static VariableInfo: typeof VariableInfo;
+	static ALLOWED_MEMBER_TYPES_CALL_EXPRESSION: 1;
 	static getImportAttributes: (
 		node:
 			| ImportDeclarationJavascriptParser
@@ -7650,6 +7685,7 @@ declare class JavascriptParser extends Parser {
 			| ExportAllDeclarationJavascriptParser
 			| ImportExpressionJavascriptParser
 	) => undefined | ImportAttributes;
+	static VariableInfo: typeof VariableInfo;
 }
 
 /**
@@ -8129,6 +8165,9 @@ declare interface KnownCreateStatsOptionsContext {
 	forToString?: boolean;
 }
 declare interface KnownHooks {
+	/**
+	 * resolve step hook
+	 */
 	resolveStep: SyncHook<
 		[
 			AsyncSeriesBailHook<
@@ -8138,11 +8177,23 @@ declare interface KnownHooks {
 			ResolveRequest
 		]
 	>;
+
+	/**
+	 * no resolve hook
+	 */
 	noResolve: SyncHook<[ResolveRequest, Error]>;
+
+	/**
+	 * resolve hook
+	 */
 	resolve: AsyncSeriesBailHook<
 		[ResolveRequest, ResolveContext],
 		null | ResolveRequest
 	>;
+
+	/**
+	 * result hook
+	 */
 	result: AsyncSeriesHook<[ResolveRequest, ResolveContext]>;
 }
 declare interface KnownNormalizedStatsOptions {
@@ -8515,24 +8566,24 @@ declare interface LStatSync {
 declare interface LStatTypes {
 	(
 		path: PathLikeTypes,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: IStats) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: IStats) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: undefined | (StatOptions & { bigint?: false }),
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: IStats) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: IStats) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: StatOptions & { bigint: true },
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: IBigIntStats) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: IBigIntStats) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: undefined | StatOptions,
 		callback: (
-			arg0: null | NodeJS.ErrnoException,
-			arg1?: IStats | IBigIntStats
+			err: null | NodeJS.ErrnoException,
+			result?: IStats | IBigIntStats
 		) => void
 	): void;
 }
@@ -9271,7 +9322,14 @@ declare interface MakeDirectoryOptions {
 	mode?: string | number;
 }
 declare interface MapOptions {
+	/**
+	 * need columns?
+	 */
 	columns?: boolean;
+
+	/**
+	 * is module
+	 */
 	module?: boolean;
 }
 declare interface MatchObject {
@@ -9429,7 +9487,10 @@ declare class Module extends DependenciesBlock {
 	isProvided(exportName: string): null | boolean;
 	get exportsArgument(): string;
 	get moduleArgument(): string;
-	getExportsType(moduleGraph: ModuleGraph, strict?: boolean): ExportsType;
+	getExportsType(
+		moduleGraph: ModuleGraph,
+		strict?: boolean
+	): "namespace" | "default-only" | "default-with-named" | "dynamic";
 	addPresentationalDependency(presentationalDependency: Dependency): void;
 	addCodeGenerationDependency(codeGenerationDependency: Dependency): void;
 	addWarning(warning: WebpackError): void;
@@ -9768,7 +9829,6 @@ declare class ModuleGraph {
 	setDepth(module: Module, depth: number): void;
 	setDepthIfLower(module: Module, depth: number): boolean;
 	isAsync(module: Module): boolean;
-	isDeferred(module: Module): boolean;
 	setAsync(module: Module): void;
 	getMeta(thing: object): any;
 	getMetaIfExisting(thing: object): any;
@@ -9841,12 +9901,12 @@ declare class ModuleGraphConnection {
 	getActiveState(runtime: RuntimeSpec): ConnectionState;
 	setActive(value: boolean): void;
 	active: void;
-	static CIRCULAR_CONNECTION: typeof CIRCULAR_CONNECTION;
-	static TRANSITIVE_ONLY: typeof TRANSITIVE_ONLY;
 	static addConnectionStates: (
 		a: ConnectionState,
 		b: ConnectionState
 	) => ConnectionState;
+	static TRANSITIVE_ONLY: typeof TRANSITIVE_ONLY;
+	static CIRCULAR_CONNECTION: typeof CIRCULAR_CONNECTION;
 }
 type ModuleId = string | number;
 type ModuleInfo = ConcatenatedModuleInfo | ExternalModuleInfo;
@@ -10060,11 +10120,6 @@ declare interface ModuleReferenceOptions {
 	 * true, when this referenced export is directly imported (not via property access)
 	 */
 	directImport: boolean;
-
-	/**
-	 * true, when this referenced export is deferred
-	 */
-	deferredImport: boolean;
 
 	/**
 	 * if the position is ASI safe or unknown
@@ -11437,7 +11492,7 @@ declare class OriginalSource extends Source {
 			source: null | string,
 			sourceContent?: string
 		) => void,
-		onName: (nameIndex: number, name: string) => void
+		_onName: (nameIndex: number, name: string) => void
 	): GeneratedSourceInfo;
 }
 
@@ -12011,12 +12066,39 @@ declare interface ParameterizedComparator<TArg extends object, T> {
 	(tArg: TArg): Comparator<T>;
 }
 declare interface ParsedIdentifier {
+	/**
+	 * request
+	 */
 	request: string;
+
+	/**
+	 * query
+	 */
 	query: string;
+
+	/**
+	 * fragment
+	 */
 	fragment: string;
+
+	/**
+	 * is directory
+	 */
 	directory: boolean;
+
+	/**
+	 * is module
+	 */
 	module: boolean;
+
+	/**
+	 * is file
+	 */
 	file: boolean;
+
+	/**
+	 * is internal
+	 */
 	internal: boolean;
 }
 declare class Parser {
@@ -12229,13 +12311,16 @@ type Plugin =
 	| false
 	| ""
 	| 0
-	| { apply: (arg0: Resolver) => void }
-	| ((this: Resolver, arg1: Resolver) => void);
+	| { apply: (this: Resolver, resolver: Resolver) => void }
+	| ((this: Resolver, resolver: Resolver) => void);
 declare interface PnpApi {
+	/**
+	 * resolve to unqualified
+	 */
 	resolveToUnqualified: (
-		arg0: string,
-		arg1: string,
-		arg2: object
+		packageName: string,
+		issuer: string,
+		options: { considerBuiltins: boolean }
 	) => null | string;
 }
 declare class PrefetchPlugin {
@@ -12514,14 +12599,49 @@ declare class RawSource extends Source {
 	): GeneratedSourceInfo;
 }
 declare interface RawSourceMap {
+	/**
+	 * version
+	 */
 	version: number;
+
+	/**
+	 * sources
+	 */
 	sources: string[];
+
+	/**
+	 * names
+	 */
 	names: string[];
+
+	/**
+	 * source root
+	 */
 	sourceRoot?: string;
+
+	/**
+	 * sources content
+	 */
 	sourcesContent?: string[];
+
+	/**
+	 * mappings
+	 */
 	mappings: string;
+
+	/**
+	 * file
+	 */
 	file: string;
+
+	/**
+	 * debug id
+	 */
 	debugId?: string;
+
+	/**
+	 * ignore list
+	 */
 	ignoreList?: number[];
 }
 declare interface Read<
@@ -12703,7 +12823,7 @@ declare interface ReadFileTypes {
 			| undefined
 			| null
 			| ({ encoding?: null; flag?: string } & Abortable),
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: Buffer) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: Buffer) => void
 	): void;
 	(
 		path: PathOrFileDescriptorTypes,
@@ -12721,7 +12841,7 @@ declare interface ReadFileTypes {
 			| "binary"
 			| "hex"
 			| ({ encoding: BufferEncoding; flag?: string } & Abortable),
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: string) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: string) => void
 	): void;
 	(
 		path: PathOrFileDescriptorTypes,
@@ -12742,13 +12862,13 @@ declare interface ReadFileTypes {
 			| "hex"
 			| (ObjectEncodingOptions & { flag?: string } & Abortable),
 		callback: (
-			arg0: null | NodeJS.ErrnoException,
-			arg1?: string | Buffer
+			err: null | NodeJS.ErrnoException,
+			result?: string | Buffer
 		) => void
 	): void;
 	(
 		path: PathOrFileDescriptorTypes,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: Buffer) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: Buffer) => void
 	): void;
 }
 declare interface ReaddirFs {
@@ -12834,7 +12954,7 @@ declare interface ReaddirFs {
 		},
 		callback: (
 			err: null | NodeJS.ErrnoException,
-			files?: DirentFs<string>[]
+			files?: Dirent<string>[]
 		) => void
 	): void;
 	(
@@ -12842,7 +12962,7 @@ declare interface ReaddirFs {
 		options: { encoding: "buffer"; withFileTypes: true; recursive?: boolean },
 		callback: (
 			err: null | NodeJS.ErrnoException,
-			files: DirentFs<Buffer>[]
+			files: Dirent<Buffer>[]
 		) => void
 	): void;
 }
@@ -12912,11 +13032,11 @@ declare interface ReaddirSync {
 			withFileTypes: true;
 			recursive?: boolean;
 		}
-	): DirentFs<string>[];
+	): Dirent<string>[];
 	(
 		path: PathLikeFs,
 		options: { encoding: "buffer"; withFileTypes: true; recursive?: boolean }
-	): DirentFs<Buffer>[];
+	): Dirent<Buffer>[];
 }
 declare interface ReaddirTypes {
 	(
@@ -12954,18 +13074,14 @@ declare interface ReaddirTypes {
 					withFileTypes?: false;
 					recursive?: boolean;
 			  },
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: string[]) => void
+		callback: (err: null | NodeJS.ErrnoException, files?: string[]) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options:
 			| "buffer"
 			| { encoding: "buffer"; withFileTypes?: false; recursive?: boolean },
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: Buffer[]) => void
-	): void;
-	(
-		path: PathLikeTypes,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: string[]) => void
+		callback: (err: null | NodeJS.ErrnoException, files?: Buffer[]) => void
 	): void;
 	(
 		path: PathLikeTypes,
@@ -12989,9 +13105,13 @@ declare interface ReaddirTypes {
 					recursive?: boolean;
 			  }),
 		callback: (
-			arg0: null | NodeJS.ErrnoException,
-			arg1?: string[] | Buffer[]
+			err: null | NodeJS.ErrnoException,
+			files?: string[] | Buffer[]
 		) => void
+	): void;
+	(
+		path: PathLikeTypes,
+		callback: (err: null | NodeJS.ErrnoException, files?: string[]) => void
 	): void;
 	(
 		path: PathLikeTypes,
@@ -12999,7 +13119,18 @@ declare interface ReaddirTypes {
 			withFileTypes: true;
 			recursive?: boolean;
 		},
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: DirentTypes[]) => void
+		callback: (
+			err: null | NodeJS.ErrnoException,
+			files?: Dirent<string>[]
+		) => void
+	): void;
+	(
+		path: PathLikeTypes,
+		options: { encoding: "buffer"; withFileTypes: true; recursive?: boolean },
+		callback: (
+			err: null | NodeJS.ErrnoException,
+			files: Dirent<Buffer>[]
+		) => void
 	): void;
 }
 declare interface ReadlinkFs {
@@ -13035,24 +13166,24 @@ declare interface ReadlinkTypes {
 	(
 		path: PathLikeTypes,
 		options: EncodingOption,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: string) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: string) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: BufferEncodingOption,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: Buffer) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: Buffer) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: EncodingOption,
 		callback: (
-			arg0: null | NodeJS.ErrnoException,
-			arg1?: string | Buffer
+			err: null | NodeJS.ErrnoException,
+			result?: string | Buffer
 		) => void
 	): void;
 	(
 		path: PathLikeTypes,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: string) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: string) => void
 	): void;
 }
 declare class RealContentHashPlugin {
@@ -13115,24 +13246,24 @@ declare interface RealPathTypes {
 	(
 		path: PathLikeTypes,
 		options: EncodingOption,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: string) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: string) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: BufferEncodingOption,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: Buffer) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: Buffer) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: EncodingOption,
 		callback: (
-			arg0: null | NodeJS.ErrnoException,
-			arg1?: string | Buffer
+			err: null | NodeJS.ErrnoException,
+			result?: string | Buffer
 		) => void
 	): void;
 	(
 		path: PathLikeTypes,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: string) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: string) => void
 	): void;
 }
 type Records = KnownRecords &
@@ -13393,6 +13524,9 @@ declare interface ResolveBuildDependenciesResult {
 	resolveDependencies: ResolveDependencies;
 }
 declare interface ResolveContext {
+	/**
+	 * directories that was found on file system
+	 */
 	contextDependencies?: WriteOnlySet<string>;
 
 	/**
@@ -13413,12 +13547,12 @@ declare interface ResolveContext {
 	/**
 	 * log function
 	 */
-	log?: (arg0: string) => void;
+	log?: (str: string) => void;
 
 	/**
 	 * yield result, if provided plugins can return several results
 	 */
-	yield?: (arg0: ResolveRequest) => void;
+	yield?: (request: ResolveRequest) => void;
 }
 declare interface ResolveData {
 	contextInfo: ModuleFactoryCreateDataContextInfo;
@@ -13646,36 +13780,139 @@ declare interface ResolveOptions {
 	useSyncFileSystemCalls?: boolean;
 }
 declare interface ResolveOptionsResolverFactoryObject1 {
+	/**
+	 * alias
+	 */
 	alias: AliasOption[];
+
+	/**
+	 * fallback
+	 */
 	fallback: AliasOption[];
+
+	/**
+	 * alias fields
+	 */
 	aliasFields: Set<string | string[]>;
+
+	/**
+	 * extension alias
+	 */
 	extensionAlias: ExtensionAliasOption[];
-	cachePredicate: (arg0: ResolveRequest) => boolean;
+
+	/**
+	 * cache predicate
+	 */
+	cachePredicate: (predicate: ResolveRequest) => boolean;
+
+	/**
+	 * cache with context
+	 */
 	cacheWithContext: boolean;
 
 	/**
 	 * A list of exports field condition names.
 	 */
 	conditionNames: Set<string>;
+
+	/**
+	 * description files
+	 */
 	descriptionFiles: string[];
+
+	/**
+	 * enforce extension
+	 */
 	enforceExtension: boolean;
+
+	/**
+	 * exports fields
+	 */
 	exportsFields: Set<string | string[]>;
+
+	/**
+	 * imports fields
+	 */
 	importsFields: Set<string | string[]>;
+
+	/**
+	 * extensions
+	 */
 	extensions: Set<string>;
+
+	/**
+	 * fileSystem
+	 */
 	fileSystem: FileSystem;
-	unsafeCache: false | object;
+
+	/**
+	 * unsafe cache
+	 */
+	unsafeCache: false | CacheTypes;
+
+	/**
+	 * symlinks
+	 */
 	symlinks: boolean;
+
+	/**
+	 * resolver
+	 */
 	resolver?: Resolver;
+
+	/**
+	 * modules
+	 */
 	modules: (string | string[])[];
+
+	/**
+	 * main fields
+	 */
 	mainFields: { name: string[]; forceRelative: boolean }[];
+
+	/**
+	 * main files
+	 */
 	mainFiles: Set<string>;
+
+	/**
+	 * plugins
+	 */
 	plugins: Plugin[];
+
+	/**
+	 * pnp API
+	 */
 	pnpApi: null | PnpApi;
+
+	/**
+	 * roots
+	 */
 	roots: Set<string>;
+
+	/**
+	 * fully specified
+	 */
 	fullySpecified: boolean;
+
+	/**
+	 * resolve to context
+	 */
 	resolveToContext: boolean;
+
+	/**
+	 * restrictions
+	 */
 	restrictions: Set<string | RegExp>;
+
+	/**
+	 * prefer relative
+	 */
 	preferRelative: boolean;
+
+	/**
+	 * prefer absolute
+	 */
 	preferAbsolute: boolean;
 }
 declare interface ResolveOptionsResolverFactoryObject2 {
@@ -13702,7 +13939,7 @@ declare interface ResolveOptionsResolverFactoryObject2 {
 	/**
 	 * A function which decides whether a request should be cached or not. An object is passed with at least `path` and `request` properties.
 	 */
-	cachePredicate?: (arg0: ResolveRequest) => boolean;
+	cachePredicate?: (predicate: ResolveRequest) => boolean;
 
 	/**
 	 * Whether or not the unsafeCache should include request context as part of the cache key.
@@ -13747,7 +13984,7 @@ declare interface ResolveOptionsResolverFactoryObject2 {
 	/**
 	 * Use this cache object to unsafely cache the successful requests
 	 */
-	unsafeCache?: boolean | object;
+	unsafeCache?: boolean | CacheTypes;
 
 	/**
 	 * Resolve symlinks to their symlinked location
@@ -14757,10 +14994,6 @@ declare abstract class RuntimeTemplate {
 		 */
 		module: Module;
 		/**
-		 * the module graph
-		 */
-		moduleGraph: ModuleGraph;
-		/**
 		 * the chunk graph
 		 */
 		chunkGraph: ChunkGraph;
@@ -14784,20 +15017,12 @@ declare abstract class RuntimeTemplate {
 		 * if set, will be filled with runtime requirements
 		 */
 		runtimeRequirements: Set<string>;
-		/**
-		 * if set, the module will be deferred
-		 */
-		defer?: boolean;
 	}): [string, string];
 	exportFromImport<GenerateContext>(__0: {
 		/**
 		 * the module graph
 		 */
 		moduleGraph: ModuleGraph;
-		/**
-		 * the chunk graph
-		 */
-		chunkGraph: ChunkGraph;
 		/**
 		 * the module
 		 */
@@ -14846,10 +15071,6 @@ declare abstract class RuntimeTemplate {
 		 * if set, will be filled with runtime requirements
 		 */
 		runtimeRequirements: Set<string>;
-		/**
-		 * if true, the module will be deferred.
-		 */
-		defer?: boolean;
 	}): string;
 	blockPromise(__0: {
 		/**
@@ -15256,15 +15477,45 @@ declare class Source {
 	updateHash(hash: HashLike): void;
 }
 declare interface SourceAndMap {
+	/**
+	 * source
+	 */
 	source: SourceValue;
+
+	/**
+	 * map
+	 */
 	map: null | RawSourceMap;
 }
 declare interface SourceLike {
+	/**
+	 * source
+	 */
 	source: () => SourceValue;
+
+	/**
+	 * buffer
+	 */
 	buffer?: () => Buffer;
+
+	/**
+	 * size
+	 */
 	size?: () => number;
+
+	/**
+	 * map
+	 */
 	map?: (options?: MapOptions) => null | RawSourceMap;
+
+	/**
+	 * source and map
+	 */
 	sourceAndMap?: (options?: MapOptions) => SourceAndMap;
+
+	/**
+	 * hash updater
+	 */
 	updateHash?: (hash: HashLike) => void;
 }
 declare class SourceMapDevToolPlugin {
@@ -15518,24 +15769,24 @@ declare interface StatSyncOptions {
 declare interface StatTypes {
 	(
 		path: PathLikeTypes,
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: IStats) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: IStats) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: undefined | (StatOptions & { bigint?: false }),
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: IStats) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: IStats) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: StatOptions & { bigint: true },
-		callback: (arg0: null | NodeJS.ErrnoException, arg1?: IBigIntStats) => void
+		callback: (err: null | NodeJS.ErrnoException, result?: IBigIntStats) => void
 	): void;
 	(
 		path: PathLikeTypes,
 		options: undefined | StatOptions,
 		callback: (
-			arg0: null | NodeJS.ErrnoException,
-			arg1?: IStats | IBigIntStats
+			err: null | NodeJS.ErrnoException,
+			result?: IStats | IBigIntStats
 		) => void
 	): void;
 }
@@ -16247,7 +16498,6 @@ declare interface TargetItemWithConnection {
 declare interface TargetItemWithoutConnection {
 	module: Module;
 	export: string[];
-	deferred: boolean;
 }
 declare class Template {
 	constructor();
@@ -16278,8 +16528,8 @@ declare class Template {
 		runtimeModules: RuntimeModule[],
 		renderContext: RenderContextJavascriptModulesPlugin
 	): Source;
-	static NUMBER_OF_IDENTIFIER_CONTINUATION_CHARS: number;
 	static NUMBER_OF_IDENTIFIER_START_CHARS: number;
+	static NUMBER_OF_IDENTIFIER_CONTINUATION_CHARS: number;
 }
 type TemplatePath =
 	| string
@@ -16309,11 +16559,6 @@ declare interface TrustedTypes {
 	policyName?: string;
 }
 declare const UNDEFINED_MARKER: unique symbol;
-
-/**
- * `URL` class is a global reference for `require('url').URL`
- * https://nodejs.org/api/url.html#the-whatwg-url-api
- */
 declare interface URL_url extends URL {}
 type UnsafeCacheData = KnownUnsafeCacheData & Record<string, any>;
 declare interface UpdateHashContextDependency {
@@ -16924,6 +17169,7 @@ declare interface WriteFile {
 			| Int32Array
 			| BigUint64Array
 			| BigInt64Array
+			| Float16Array
 			| Float32Array
 			| Float64Array
 			| DataView,
@@ -16943,6 +17189,7 @@ declare interface WriteFile {
 			| Int32Array
 			| BigUint64Array
 			| BigInt64Array
+			| Float16Array
 			| Float32Array
 			| Float64Array
 			| DataView,
@@ -17108,85 +17355,81 @@ declare namespace exports {
 		export let matchObject: (obj: MatchObject, str: string) => boolean;
 	}
 	export namespace OptimizationStages {
-		export let STAGE_ADVANCED: 10;
 		export let STAGE_BASIC: -10;
 		export let STAGE_DEFAULT: 0;
+		export let STAGE_ADVANCED: 10;
 	}
 	export namespace RuntimeGlobals {
-		export let amdDefine: "__webpack_require__.amdD";
-		export let amdOptions: "__webpack_require__.amdO";
-		export let asyncModule: "__webpack_require__.a";
-		export let asyncModuleDoneSymbol: "__webpack_require__.aD";
-		export let asyncModuleExportSymbol: "__webpack_require__.aE";
-		export let baseURI: "__webpack_require__.b";
-		export let chunkCallback: "webpackChunk";
-		export let chunkName: "__webpack_require__.cn";
-		export let compatGetDefaultExport: "__webpack_require__.n";
-		export let createFakeNamespaceObject: "__webpack_require__.t";
-		export let createScript: "__webpack_require__.ts";
-		export let createScriptUrl: "__webpack_require__.tu";
-		export let currentRemoteGetScope: "__webpack_require__.R";
-		export let definePropertyGetters: "__webpack_require__.d";
-		export let ensureChunk: "__webpack_require__.e";
-		export let ensureChunkHandlers: "__webpack_require__.f";
-		export let ensureChunkIncludeEntries: "__webpack_require__.f (include entries)";
-		export let entryModuleId: "__webpack_require__.s";
+		export let require: "__webpack_require__";
+		export let requireScope: "__webpack_require__.*";
 		export let exports: "__webpack_exports__";
-		export let externalInstallChunk: "__webpack_require__.C";
-		export let getChunkCssFilename: "__webpack_require__.k";
-		export let getChunkScriptFilename: "__webpack_require__.u";
-		export let getChunkUpdateCssFilename: "__webpack_require__.hk";
-		export let getChunkUpdateScriptFilename: "__webpack_require__.hu";
-		export let getFullHash: "__webpack_require__.h";
-		export let getTrustedTypesPolicy: "__webpack_require__.tt";
-		export let getUpdateManifestFilename: "__webpack_require__.hmrF";
-		export let global: "__webpack_require__.g";
-		export let harmonyModuleDecorator: "__webpack_require__.hmd";
-		export let hasCssModules: "has css modules";
-		export let hasFetchPriority: "has fetch priority";
-		export let hasOwnProperty: "__webpack_require__.o";
-		export let hmrDownloadManifest: "__webpack_require__.hmrM";
-		export let hmrDownloadUpdateHandlers: "__webpack_require__.hmrC";
-		export let hmrInvalidateModuleHandlers: "__webpack_require__.hmrI";
-		export let hmrModuleData: "__webpack_require__.hmrD";
-		export let hmrRuntimeStatePrefix: "__webpack_require__.hmrS";
-		export let initializeSharing: "__webpack_require__.I";
-		export let instantiateWasm: "__webpack_require__.v";
-		export let interceptModuleExecution: "__webpack_require__.i";
-		export let loadScript: "__webpack_require__.l";
-		export let makeDeferredNamespaceObject: "__webpack_require__.z";
-		export let makeDeferredNamespaceObjectSymbol: "__webpack_require__.zS";
-		export let makeNamespaceObject: "__webpack_require__.r";
+		export let thisAsExports: "top-level-this-exports";
+		export let returnExportsFromRuntime: "return-exports-from-runtime";
 		export let module: "module";
+		export let moduleId: "module.id";
+		export let moduleLoaded: "module.loaded";
+		export let publicPath: "__webpack_require__.p";
+		export let entryModuleId: "__webpack_require__.s";
 		export let moduleCache: "__webpack_require__.c";
 		export let moduleFactories: "__webpack_require__.m";
 		export let moduleFactoriesAddOnly: "__webpack_require__.m (add only)";
-		export let moduleId: "module.id";
-		export let moduleLoaded: "module.loaded";
-		export let nodeModuleDecorator: "__webpack_require__.nmd";
-		export let onChunksLoaded: "__webpack_require__.O";
+		export let ensureChunk: "__webpack_require__.e";
+		export let ensureChunkHandlers: "__webpack_require__.f";
+		export let ensureChunkIncludeEntries: "__webpack_require__.f (include entries)";
 		export let prefetchChunk: "__webpack_require__.E";
 		export let prefetchChunkHandlers: "__webpack_require__.F";
 		export let preloadChunk: "__webpack_require__.G";
 		export let preloadChunkHandlers: "__webpack_require__.H";
-		export let publicPath: "__webpack_require__.p";
-		export let relativeUrl: "__webpack_require__.U";
-		export let require: "__webpack_require__";
-		export let requireScope: "__webpack_require__.*";
-		export let returnExportsFromRuntime: "return-exports-from-runtime";
-		export let runtimeId: "__webpack_require__.j";
+		export let definePropertyGetters: "__webpack_require__.d";
+		export let makeNamespaceObject: "__webpack_require__.r";
+		export let createFakeNamespaceObject: "__webpack_require__.t";
+		export let compatGetDefaultExport: "__webpack_require__.n";
+		export let harmonyModuleDecorator: "__webpack_require__.hmd";
+		export let nodeModuleDecorator: "__webpack_require__.nmd";
+		export let getFullHash: "__webpack_require__.h";
+		export let wasmInstances: "__webpack_require__.w";
+		export let instantiateWasm: "__webpack_require__.v";
+		export let uncaughtErrorHandler: "__webpack_require__.oe";
 		export let scriptNonce: "__webpack_require__.nc";
-		export let shareScopeMap: "__webpack_require__.S";
+		export let loadScript: "__webpack_require__.l";
+		export let createScript: "__webpack_require__.ts";
+		export let createScriptUrl: "__webpack_require__.tu";
+		export let getTrustedTypesPolicy: "__webpack_require__.tt";
+		export let hasFetchPriority: "has fetch priority";
+		export let chunkName: "__webpack_require__.cn";
+		export let runtimeId: "__webpack_require__.j";
+		export let getChunkScriptFilename: "__webpack_require__.u";
+		export let getChunkCssFilename: "__webpack_require__.k";
+		export let hasCssModules: "has css modules";
+		export let getChunkUpdateScriptFilename: "__webpack_require__.hu";
+		export let getChunkUpdateCssFilename: "__webpack_require__.hk";
 		export let startup: "__webpack_require__.x";
-		export let startupEntrypoint: "__webpack_require__.X";
 		export let startupNoDefault: "__webpack_require__.x (no default handler)";
 		export let startupOnlyAfter: "__webpack_require__.x (only after)";
 		export let startupOnlyBefore: "__webpack_require__.x (only before)";
+		export let chunkCallback: "webpackChunk";
+		export let startupEntrypoint: "__webpack_require__.X";
+		export let onChunksLoaded: "__webpack_require__.O";
+		export let externalInstallChunk: "__webpack_require__.C";
+		export let interceptModuleExecution: "__webpack_require__.i";
+		export let global: "__webpack_require__.g";
+		export let shareScopeMap: "__webpack_require__.S";
+		export let initializeSharing: "__webpack_require__.I";
+		export let currentRemoteGetScope: "__webpack_require__.R";
+		export let getUpdateManifestFilename: "__webpack_require__.hmrF";
+		export let hmrDownloadManifest: "__webpack_require__.hmrM";
+		export let hmrDownloadUpdateHandlers: "__webpack_require__.hmrC";
+		export let hmrModuleData: "__webpack_require__.hmrD";
+		export let hmrInvalidateModuleHandlers: "__webpack_require__.hmrI";
+		export let hmrRuntimeStatePrefix: "__webpack_require__.hmrS";
+		export let amdDefine: "__webpack_require__.amdD";
+		export let amdOptions: "__webpack_require__.amdO";
 		export let system: "__webpack_require__.System";
+		export let hasOwnProperty: "__webpack_require__.o";
 		export let systemContext: "__webpack_require__.y";
-		export let thisAsExports: "top-level-this-exports";
-		export let uncaughtErrorHandler: "__webpack_require__.oe";
-		export let wasmInstances: "__webpack_require__.w";
+		export let baseURI: "__webpack_require__.b";
+		export let relativeUrl: "__webpack_require__.U";
+		export let asyncModule: "__webpack_require__.a";
 	}
 	export const UsageState: Readonly<{
 		Unused: 0;
@@ -17237,6 +17480,9 @@ declare namespace exports {
 	}
 	export namespace optimize {
 		export namespace InnerGraph {
+			export let bailout: (parserState: ParserState) => void;
+			export let enable: (parserState: ParserState) => void;
+			export let isEnabled: (parserState: ParserState) => boolean;
 			export let addUsage: (
 				state: ParserState,
 				symbol: null | TopLevelSymbol,
@@ -17247,8 +17493,28 @@ declare namespace exports {
 				name: string,
 				usage: string | true | TopLevelSymbol
 			) => void;
-			export let bailout: (parserState: ParserState) => void;
-			export let enable: (parserState: ParserState) => void;
+			export let inferDependencyUsage: (state: ParserState) => void;
+			export let onUsage: (
+				state: ParserState,
+				onUsageCallback: (value?: boolean | Set<string>) => void
+			) => void;
+			export let setTopLevelSymbol: (
+				state: ParserState,
+				symbol?: TopLevelSymbol
+			) => void;
+			export let getTopLevelSymbol: (
+				state: ParserState
+			) => void | TopLevelSymbol;
+			export let tagTopLevelSymbol: (
+				parser: JavascriptParser,
+				name: string
+			) => undefined | TopLevelSymbol;
+			export let isDependencyUsedByExports: (
+				dependency: Dependency,
+				usedByExports: boolean | Set<string>,
+				moduleGraph: ModuleGraph,
+				runtime: RuntimeSpec
+			) => boolean;
 			export let getDependencyUsedByExportsCondition: (
 				dependency: Dependency,
 				usedByExports: undefined | boolean | Set<string>,
@@ -17260,29 +17526,6 @@ declare namespace exports {
 						moduleGraphConnection: ModuleGraphConnection,
 						runtime: RuntimeSpec
 				  ) => ConnectionState);
-			export let getTopLevelSymbol: (
-				state: ParserState
-			) => void | TopLevelSymbol;
-			export let inferDependencyUsage: (state: ParserState) => void;
-			export let isDependencyUsedByExports: (
-				dependency: Dependency,
-				usedByExports: boolean | Set<string>,
-				moduleGraph: ModuleGraph,
-				runtime: RuntimeSpec
-			) => boolean;
-			export let isEnabled: (parserState: ParserState) => boolean;
-			export let onUsage: (
-				state: ParserState,
-				onUsageCallback: (value?: boolean | Set<string>) => void
-			) => void;
-			export let setTopLevelSymbol: (
-				state: ParserState,
-				symbol?: TopLevelSymbol
-			) => void;
-			export let tagTopLevelSymbol: (
-				parser: JavascriptParser,
-				name: string
-			) => undefined | TopLevelSymbol;
 			export { TopLevelSymbol, topLevelSymbolTag };
 		}
 		export {
@@ -17365,38 +17608,17 @@ declare namespace exports {
 	export namespace util {
 		export const createHash: (algorithm: HashFunction) => Hash;
 		export namespace comparators {
-			export let compareChunkGroupsByIndex: (
-				a: ChunkGroup,
-				b: ChunkGroup
-			) => 0 | 1 | -1;
-			export let compareChunks: ParameterizedComparator<ChunkGraph, Chunk>;
 			export let compareChunksById: (a: Chunk, b: Chunk) => 0 | 1 | -1;
-			export let compareChunksNatural: (
-				chunkGraph: ChunkGraph
-			) => Comparator<Chunk>;
-			export let compareIds: (
-				a: string | number,
-				b: string | number
-			) => 0 | 1 | -1;
-			export let compareIterables: <T>(
-				elementComparator: Comparator<T>
-			) => Comparator<Iterable<T>>;
-			export let compareLocations: (
-				a: DependencyLocation,
-				b: DependencyLocation
+			export let compareModulesByIdentifier: (
+				a: Module,
+				b: Module
 			) => 0 | 1 | -1;
 			export let compareModulesById: ParameterizedComparator<
 				ChunkGraph,
 				Module
 			>;
-			export let compareModulesByIdOrIdentifier: ParameterizedComparator<
-				ChunkGraph,
-				Module
-			>;
-			export let compareModulesByIdentifier: (
-				a: Module,
-				b: Module
-			) => 0 | 1 | -1;
+			export let compareNumbers: (a: number, b: number) => 0 | 1 | -1;
+			export let compareStringsNumeric: (a: string, b: string) => 0 | 1 | -1;
 			export let compareModulesByPostOrderIndexOrIdentifier: ParameterizedComparator<
 				ModuleGraph,
 				Module
@@ -17405,42 +17627,60 @@ declare namespace exports {
 				ModuleGraph,
 				Module
 			>;
-			export let compareNumbers: (a: number, b: number) => 0 | 1 | -1;
-			export let compareSelect: <T, R>(
-				getter: Selector<T, R>,
-				comparator: Comparator<R>
-			) => Comparator<T>;
+			export let compareModulesByIdOrIdentifier: ParameterizedComparator<
+				ChunkGraph,
+				Module
+			>;
+			export let compareChunks: ParameterizedComparator<ChunkGraph, Chunk>;
+			export let compareIds: (
+				a: string | number,
+				b: string | number
+			) => 0 | 1 | -1;
 			export let compareStrings: (a: string, b: string) => 0 | 1 | -1;
-			export let compareStringsNumeric: (a: string, b: string) => 0 | 1 | -1;
+			export let compareChunkGroupsByIndex: (
+				a: ChunkGroup,
+				b: ChunkGroup
+			) => 0 | 1 | -1;
 			export let concatComparators: <T>(
 				c1: Comparator<T>,
 				c2: Comparator<T>,
 				...cRest: Comparator<T>[]
 			) => Comparator<T>;
+			export let compareSelect: <T, R>(
+				getter: Selector<T, R>,
+				comparator: Comparator<R>
+			) => Comparator<T>;
+			export let compareIterables: <T>(
+				elementComparator: Comparator<T>
+			) => Comparator<Iterable<T>>;
 			export let keepOriginalOrder: <T>(iterable: Iterable<T>) => Comparator<T>;
+			export let compareChunksNatural: (
+				chunkGraph: ChunkGraph
+			) => Comparator<Chunk>;
+			export let compareLocations: (
+				a: DependencyLocation,
+				b: DependencyLocation
+			) => 0 | 1 | -1;
 		}
 		export namespace runtime {
-			export let compareRuntime: (a: RuntimeSpec, b: RuntimeSpec) => 0 | 1 | -1;
-			export let filterRuntime: (
-				runtime: RuntimeSpec,
-				filter: (runtime?: RuntimeSpec) => boolean
-			) => undefined | string | boolean | SortableSet<string>;
-			export let forEachRuntime: (
-				runtime: RuntimeSpec,
-				fn: (runtime?: string) => void,
-				deterministicOrder?: boolean
-			) => void;
 			export let getEntryRuntime: (
 				compilation: Compilation,
 				name: string,
 				options?: EntryOptions
 			) => RuntimeSpec;
+			export let forEachRuntime: (
+				runtime: RuntimeSpec,
+				fn: (runtime?: string) => void,
+				deterministicOrder?: boolean
+			) => void;
 			export let getRuntimeKey: (runtime: RuntimeSpec) => string;
-			export let intersectRuntime: (
-				a: RuntimeSpec,
-				b: RuntimeSpec
-			) => RuntimeSpec;
 			export let keyToRuntime: (key: string) => RuntimeSpec;
+			export let runtimeToString: (runtime: RuntimeSpec) => string;
+			export let runtimeConditionToString: (
+				runtimeCondition: RuntimeCondition
+			) => string;
+			export let runtimeEqual: (a: RuntimeSpec, b: RuntimeSpec) => boolean;
+			export let compareRuntime: (a: RuntimeSpec, b: RuntimeSpec) => 0 | 1 | -1;
 			export let mergeRuntime: (a: RuntimeSpec, b: RuntimeSpec) => RuntimeSpec;
 			export let mergeRuntimeCondition: (
 				a: RuntimeCondition,
@@ -17456,11 +17696,10 @@ declare namespace exports {
 				a: RuntimeSpec,
 				b: RuntimeSpec
 			) => RuntimeSpec;
-			export let runtimeConditionToString: (
-				runtimeCondition: RuntimeCondition
-			) => string;
-			export let runtimeEqual: (a: RuntimeSpec, b: RuntimeSpec) => boolean;
-			export let runtimeToString: (runtime: RuntimeSpec) => string;
+			export let intersectRuntime: (
+				a: RuntimeSpec,
+				b: RuntimeSpec
+			) => RuntimeSpec;
 			export let subtractRuntime: (
 				a: RuntimeSpec,
 				b: RuntimeSpec
@@ -17470,6 +17709,10 @@ declare namespace exports {
 				b: RuntimeCondition,
 				runtime: RuntimeSpec
 			) => RuntimeCondition;
+			export let filterRuntime: (
+				runtime: RuntimeSpec,
+				filter: (runtime?: RuntimeSpec) => boolean
+			) => undefined | string | boolean | SortableSet<string>;
 			export { RuntimeSpecMap, RuntimeSpecSet };
 		}
 		export namespace serialization {
@@ -17613,7 +17856,7 @@ declare namespace exports {
 		AutomaticPrefetchPlugin,
 		AsyncDependenciesBlock,
 		BannerPlugin,
-		Cache,
+		CacheClass as Cache,
 		Chunk,
 		ChunkGraph,
 		CleanPlugin,
