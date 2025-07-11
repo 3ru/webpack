@@ -5,6 +5,9 @@ import defaultExport from "external_esm";
 // Partial imports trigger export analysis
 import { unusedExport1, unusedExport2, usedExport } from "external_unused";
 
+// Import module but don't use any exports (should result in getUsedExports returning false)
+import "external_never_used";
+
 import { nested } from "external_nested";
 
 // Deferred external
@@ -25,6 +28,25 @@ export function useImports() {
 		nested: nested
 	};
 }
+
+// Export deferred test functions
+export {
+	testDeferredNamespace,
+	testDeferredNamed,
+	testDeferredDefault,
+	evaluateDeferred
+} from "./deferred-test";
+
+export {
+	testDeferredCommonJsNamespace,
+	accessDeferredCommonJs
+} from "./deferred-commonjs-test";
+
+// Export selective export functions
+export {
+	useSelectiveExports,
+	getUnusedNamespace
+} from "./selective-export";
 
 // Trigger concatenation
 import "./lib1";
