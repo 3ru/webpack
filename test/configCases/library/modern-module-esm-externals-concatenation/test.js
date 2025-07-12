@@ -82,4 +82,35 @@ it("should generate ESM externals when module concatenation is enabled", functio
 	expect(unusedNs).toBeDefined();
 	expect(unusedNs.default).toBe("totally-unused-default");
 	expect(unusedNs.export1).toBe("totally-unused-1");
+
+	// Test deferred ESM module
+	expect(mainModule.getDeferredESM).toBeDefined();
+	expect(mainModule.testDeferredESMAccess).toBeDefined();
+
+	// Test deferred ESM access
+	const deferredESM = mainModule.getDeferredESM();
+	expect(deferredESM).toBeDefined();
+	expect(deferredESM.default).toBe("default-export");
+	expect(deferredESM.named1).toBe("named-export-1");
+
+	// Test deferred ESM with concatenation
+	const deferredESMAccess = mainModule.testDeferredESMAccess();
+	expect(deferredESMAccess.default).toBe("default-export");
+	expect(deferredESMAccess.named1).toBe("named-export-1");
+	expect(deferredESMAccess.helper).toBe("internal1");
+
+	// Test array exports
+	expect(mainModule.useArrayExports).toBeDefined();
+	expect(mainModule.nestedReexport).toBeDefined();
+
+	// Test array export handling
+	const arrayResult = mainModule.useArrayExports();
+	expect(arrayResult.directNested).toBeDefined();
+	expect(arrayResult.directNested.value).toBe("nested-value");
+	expect(arrayResult.nestedValue).toBe("nested-value");
+
+	// Test nested reexport
+	const nestedReexport = mainModule.nestedReexport;
+	expect(nestedReexport).toBeDefined();
+	expect(nestedReexport.value).toBe("nested-value");
 });

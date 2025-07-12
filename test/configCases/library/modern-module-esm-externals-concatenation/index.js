@@ -48,6 +48,18 @@ export {
 	getUnusedNamespace
 } from "./selective-export";
 
+// Export deferred ESM module functions
+export {
+	getDeferredESM,
+	testDeferredESMAccess
+} from "./deferred-esm-module";
+
+// Export array exports functions
+export {
+	useArrayExports,
+	nestedReexport
+} from "./array-exports";
+
 // Trigger concatenation
 import "./lib1";
 import "./lib2";
